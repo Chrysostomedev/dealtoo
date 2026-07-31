@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { MapPin } from "lucide-react";
 
 type Listing = {
@@ -12,19 +13,82 @@ type Listing = {
 };
 
 const ROW_1: Listing[] = [
-  { id: "1", title: "iPhone 15 Pro Max", price: "450 000 F", location: "Cocody", image: "https://picsum.photos/seed/dealtoo1/400/300", tag: "Populaire" },
-  { id: "2", title: "Villa 4 pièces", price: "85 000 000 F", location: "Riviera", image: "https://picsum.photos/seed/dealtoo2/400/300" },
-  { id: "3", title: "Toyota RAV4 2021", price: "12 500 000 F", location: "Marcory", image: "https://picsum.photos/seed/dealtoo3/400/300", tag: "Neuf" },
-  { id: "4", title: "Développeur Front-end", price: "600 000 F/mois", location: "Plateau", image: "https://picsum.photos/seed/dealtoo4/400/300" },
-  { id: "5", title: "Sneakers Jordan 4", price: "95 000 F", location: "Yopougon", image: "https://picsum.photos/seed/dealtoo5/400/300" },
+  {
+    id: "1",
+    title: "iPhone 15 Pro Max",
+    price: "450 000 F",
+    location: "Cocody",
+    image: "https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg?auto=compress&cs=tinysrgb&w=600",
+    tag: "Populaire",
+  },
+  {
+    id: "2",
+    title: "Villa 4 pièces",
+    price: "85 000 000 F",
+    location: "Riviera",
+    image: "https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=600",
+  },
+  {
+    id: "3",
+    title: "Toyota RAV4 2021",
+    price: "12 500 000 F",
+    location: "Marcory",
+    image: "https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=600",
+    tag: "Neuf",
+  },
+  {
+    id: "4",
+    title: "Développeur Front-end",
+    price: "600 000 F/mois",
+    location: "Plateau",
+    image: "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=600",
+  },
+  {
+    id: "5",
+    title: "Sneakers Jordan 4",
+    price: "95 000 F",
+    location: "Yopougon",
+    image: "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600",
+  },
 ];
 
 const ROW_2: Listing[] = [
-  { id: "6", title: "MacBook Pro M3", price: "980 000 F", location: "Angré", image: "https://picsum.photos/seed/dealtoo6/400/300", tag: "Populaire" },
-  { id: "7", title: "Studio meublé", price: "250 000 F/mois", location: "II Plateaux", image: "https://picsum.photos/seed/dealtoo7/400/300" },
-  { id: "8", title: "Traiteur événementiel", price: "Sur devis", location: "Abidjan", image: "https://picsum.photos/seed/dealtoo8/400/300" },
-  { id: "9", title: "Moto Yamaha", price: "1 300 000 F", location: "Bingerville", image: "https://picsum.photos/seed/dealtoo9/400/300" },
-  { id: "10", title: "Community Manager", price: "350 000 F/mois", location: "Cocody", image: "https://picsum.photos/seed/dealtoo10/400/300" },
+  {
+    id: "6",
+    title: "MacBook Pro M3",
+    price: "980 000 F",
+    location: "Angré",
+    image: "https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600",
+    tag: "Populaire",
+  },
+  {
+    id: "7",
+    title: "Studio meublé",
+    price: "250 000 F/mois",
+    location: "II Plateaux",
+    image: "https://picsum.photos/seed/dealtoo7/400/300",
+  },
+  {
+    id: "8",
+    title: "Traiteur événementiel",
+    price: "Sur devis",
+    location: "Abidjan",
+    image: "https://images.pexels.com/photos/2291367/pexels-photo-2291367.jpeg?auto=compress&cs=tinysrgb&w=600",
+  },
+  {
+    id: "9",
+    title: "Moto Yamaha",
+    price: "1 300 000 F",
+    location: "Bingerville",
+    image: "https://images.pexels.com/photos/2116475/pexels-photo-2116475.jpeg?auto=compress&cs=tinysrgb&w=600",
+  },
+  {
+    id: "10",
+    title: "Community Manager",
+    price: "350 000 F/mois",
+    location: "Cocody",
+    image: "https://picsum.photos/seed/dealtoo10/400/300",
+  },
 ];
 
 function Row({ items, direction, duration }: { items: Listing[]; direction: "left" | "right"; duration: number }) {
@@ -39,9 +103,10 @@ function Row({ items, direction, duration }: { items: Listing[]; direction: "lef
         style={{ animationDuration: `${duration}s` }}
       >
         {doubled.map((item, i) => (
-          <div
+          <Link
             key={`${item.id}-${i}`}
-            className="relative h-40 w-64 shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-lg shadow-black/40 transition-transform duration-300 hover:-translate-y-1 hover:border-gold-400/40"
+            href={`/annonces/${item.id}`}
+            className="relative block h-40 w-64 shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-lg shadow-black/40 transition-transform duration-300 hover:-translate-y-1 hover:border-gold-400/40"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={item.image} alt={item.title} className="h-full w-full object-cover" loading="lazy" />
@@ -52,15 +117,15 @@ function Row({ items, direction, duration }: { items: Listing[]; direction: "lef
               </span>
             )}
             <div className="absolute inset-x-0 bottom-0 p-3">
-              <p className="truncate text-sm font-semibold text-white">{item.title}</p>
+              <p className="truncate text-sm font-semibold text-orange-400">{item.title}</p>
               <div className="mt-0.5 flex items-center justify-between gap-2">
-                <span className="text-xs font-medium text-gold-300">{item.price}</span>
+                <span className="text-xs font-medium font-bold text-white">{item.price}</span>
                 <span className="flex shrink-0 items-center gap-0.5 text-[11px] text-white/60">
                   <MapPin className="size-3" /> {item.location}
                 </span>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

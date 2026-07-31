@@ -1,32 +1,21 @@
 // ============================================================================
 // app/(marketplace)/page.tsx — Accueil de la marketplace.
-//
-// Bonnes pratiques appliquées :
-// - Server Component par défaut : cette page ne fait aucun useState/useEffect,
-//   donc PAS de "use client" ici — seuls les enfants qui en ont besoin
-//   (Hero, cartes) le déclarent eux-mêmes. Moins de JS envoyé au client.
-// - Les données viennent (pour l'instant) de `lib/mock-data.ts` ; le jour où
-//   l'API est branchée, seul cet import change (ex: appel à
-//   `services/annonces.service.ts` dans un `async function Page()`),
-//   la structure de la page reste identique.
-// - Chaque section est un composant dédié (Hero, CategoryGrid...) : la page
-//   ne fait QUE les assembler, elle ne contient aucune logique de présentation.
 // ============================================================================
 
 import { ArrowRight, Briefcase, ShoppingBag, Wrench } from "lucide-react";
 import Link from "next/link";
-import { FilterBar } from "@/components/ui/FilterBar";
 import { AnnonceCard } from "@/components/cards/AnnonceCard";
 import { BoutiqueCard } from "@/components/cards/BoutiqueCard";
 import { EmploiCard } from "@/components/cards/EmploiCard";
 import { ServiceCard } from "@/components/cards/ServiceCard";
 import { CategoryGrid } from "@/components/sections/CategoryGrid";
 import { Hero } from "@/components/sections/Hero";
+import { FiltreLocalisationCI } from "@/components/ui/FiltreLocalisationCI";
+import { StoriesSection } from "@/components/sections/StoriesSection";
+import { PubStoryCard } from "@/components/cards/PubStoryCard";
 import { ANNONCES, BOUTIQUES, CATEGORIES, EMPLOIS, SERVICES } from "@/lib/mock-data";
 
-// Petit composant utilitaire interne : en-tête de section avec lien "Voir plus".
-// Défini ici (et non exporté) car spécifique à cette page — s'il devient
-// utilisé ailleurs, le sortir vers components/sections/SectionHeader.tsx.
+// En-tête de section utilitaire
 function EnteteSection({
   titre,
   icon: Icon,
@@ -56,13 +45,25 @@ export default function AccueilPage() {
   return (
     <>
       <Hero />
-<FilterBar />
+     
       <CategoryGrid categories={CATEGORIES} />
+
+      {/* --- Filtre par Localisation (Côte d'Ivoire) ------------------------- */}
+      <section className="px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <FiltreLocalisationCI />
+        </div>
+        
+      </section>
+<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-6">
+  <PubStoryCard/>
+</div>
+
 
       {/* --- Annonces tendances -------------------------------------------- */}
       <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <EnteteSection titre="Annonces tendances" icon={ShoppingBag} href="/annonces" />
+          <EnteteSection titre="Ils se sont abonnés" icon={ShoppingBag} href="/annonces" />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {ANNONCES.map((annonce) => (
               <AnnonceCard key={annonce.id} {...annonce} />
@@ -71,10 +72,25 @@ export default function AccueilPage() {
         </div>
       </section>
 
+      <section className="px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <EnteteSection titre="Récemment consultés" icon={ShoppingBag} href="/annonces" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {ANNONCES.map((annonce) => (
+              <AnnonceCard key={annonce.id} {...annonce} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-6">
+  <StoriesSection />
+</div>
+      
       {/* --- Offres d'emploi récentes ---------------------------------------- */}
       <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <EnteteSection titre="Offres d'emploi récentes" icon={Briefcase} href="/emploi" />
+          <EnteteSection titre="Dernières annonces" icon={Briefcase} href="/emploi" />
           <div className="grid gap-3 lg:grid-cols-2">
             {EMPLOIS.map((emploi) => (
               <EmploiCard key={emploi.poste} {...emploi} />
@@ -96,7 +112,7 @@ export default function AccueilPage() {
       </section>
 
       {/* --- Boutiques à la une ---------------------------------------------- */}
-      <section className="px-4 py-8 lg:px-8">
+      {/* <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h2 className="mb-4 font-display text-xl font-semibold text-ink">Boutiques à la une</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -105,7 +121,7 @@ export default function AccueilPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

@@ -1,17 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, Home, Plus, Search, User } from "lucide-react";
+import { Briefcase, Grid, Heart, Home, Plus, PlusCircle, Search, Ticket, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
-  { label: "Accueil", href: "/", icon: Home },
-  { label: "Recherche", href: "/recherche", icon: Search },
-  { label: "publier", href: "/publier", icon: Plus }, // bouton central spécial
-  { label: "Favoris", href: "/favoris", icon: Heart },
-  { label: "Profil", href: "/profil", icon: User },
+ { label: "Accueil", href: "/", icon: Home },
+  { label: "Services", href: "/services", icon: Grid },
+  { label: "Publier", href: "/publier", icon: PlusCircle }, // Bouton central spécial
+  { label: "Tarifs", href: "/tarifs", icon: Ticket },
+  { label: "Emploi", href: "/emploi", icon: Briefcase },
 ] as const;
 
 export function TapBar() {

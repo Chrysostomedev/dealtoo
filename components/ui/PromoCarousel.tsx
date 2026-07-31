@@ -7,14 +7,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export type PromoSlide = {
   id: string;
-  /** Lien de destination — passez le vôtre, sinon la slide n'est pas cliquable */
   href?: string;
   title: string;
-  /** Mot mis en avant, surligné en jaune comme sur votre visuel */
   highlight?: string;
   subtitle?: string;
   tagline?: string;
-  /** Illustration à droite de la slide */
   image?: string;
 };
 
@@ -25,7 +22,7 @@ const DEFAULT_SLIDES: PromoSlide[] = [
     highlight: "visibilité",
     subtitle: "Choisis ton abonnement !",
     tagline: "Simple. Pratique. Efficace.",
-    image: "https://picsum.photos/seed/promo1/500/400",
+    image: "https://dealtoo.s3.eu-west-3.amazonaws.com/pubImages/ea526bfc-7ec1-402a-b681-09142d26d922.png",
   },
   {
     id: "2",
@@ -33,7 +30,7 @@ const DEFAULT_SLIDES: PromoSlide[] = [
     highlight: "boutique",
     subtitle: "Vends en illimité, sans commission cachée.",
     tagline: "Configuration en 2 minutes.",
-    image: "https://picsum.photos/seed/promo2/500/400",
+    image: "https://dealtoo.s3.eu-west-3.amazonaws.com/pubImages/6c7f9e38-cda7-4dff-834e-5e972a37349b.png",
   },
   {
     id: "3",
@@ -41,22 +38,15 @@ const DEFAULT_SLIDES: PromoSlide[] = [
     highlight: "avantages",
     subtitle: "Le programme Fidélis récompense tes achats.",
     tagline: "Dès la première annonce.",
-    image: "https://picsum.photos/seed/promo3/500/400",
+    image: "https://dealtoo.s3.eu-west-3.amazonaws.com/pubImages/pub_dealtoo_4.jpg",
   },
 ];
 
 type PromoCarouselProps = {
-  /** Vos propres slides (image, texte, lien). Sinon des exemples s'affichent. */
   slides?: PromoSlide[];
-  /** Intervalle d'auto-défilement en millisecondes */
   intervalMs?: number;
 };
 
-/**
- * Bandeau promotionnel plein largeur en carrousel auto (4s par défaut),
- * flèches de navigation + pastilles, pause au survol, swipe au clavier.
- * Fournissez vos propres `slides` avec vos images et vos liens.
- */
 export function PromoCarousel({ slides = DEFAULT_SLIDES, intervalMs = 4000 }: PromoCarouselProps) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -85,41 +75,56 @@ export function PromoCarousel({ slides = DEFAULT_SLIDES, intervalMs = 4000 }: Pr
   const slide = slides[index];
 
   const variants = {
-    enter: (dir: 1 | -1) => ({ opacity: 0, x: dir === 1 ? 40 : -40 }),
+    enter: (dir: 1 | -1) => ({ opacity: 0, x: dir === 1 ? 50 : -50 }),
     center: { opacity: 1, x: 0 },
-    exit: (dir: 1 | -1) => ({ opacity: 0, x: dir === 1 ? -40 : 40 }),
+    exit: (dir: 1 | -1) => ({ opacity: 0, x: dir === 1 ? -50 : 50 }),
   };
 
   const Content = (
-    <div className="relative flex min-h-[260px] flex-col-reverse items-center gap-6 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-brand-600 via-brand-500 to-brand-400 px-6 py-8 shadow-2xl shadow-brand-500/30 sm:flex-row sm:gap-4 sm:px-10 sm:py-10">
-      {/* Décor discret */}
-      <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-14 -left-14 h-56 w-56 rounded-full bg-gold-400/20 blur-2xl" />
+    <div className="relative flex min-h-[360px] sm:min-h-[400px] lg:min-h-[440px] flex-col-reverse items-center justify-between gap-8 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#FF6600] via-[#E65C00] to-[#CC5200] p-6 sm:p-10 lg:p-12 shadow-2xl shadow-[#FF6600]/20 sm:flex-row">
+      {/* Halo décoratif arrière-plan */}
+      <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-white/10 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-20 -left-20 size-80 rounded-full bg-amber-400/20 blur-3xl" />
 
-      {/* Texte — blanc, gras, mot clé surligné en jaune */}
+      {/* Bloc Texte */}
       <div className="relative z-10 flex-1 text-center sm:text-left">
-        <p className="font-display text-3xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl">
+        <h2 className="font-display text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
           {slide.title}
           {slide.highlight && (
             <>
-              <br />
-              <span className="inline-block rounded-md bg-gold-400 px-2 py-0.5 text-black">
+              {" "}
+              <span className="inline-block rounded-lg bg-[#FFD700] px-3 py-1 text-slate-900 shadow-md">
                 {slide.highlight}
               </span>
             </>
           )}
-        </p>
+        </h2>
+        
         {slide.subtitle && (
-          <p className="mt-3 text-lg font-semibold text-white sm:text-xl">{slide.subtitle}</p>
+          <p className="mt-4 text-base font-semibold text-white/95 sm:text-lg lg:text-xl">
+            {slide.subtitle}
+          </p>
         )}
-        {slide.tagline && <p className="mt-2 text-sm font-medium text-white/85">{slide.tagline}</p>}
+        
+        {slide.tagline && (
+          <p className="mt-2 text-xs font-medium text-white/80 sm:text-sm">
+            {slide.tagline}
+          </p>
+        )}
       </div>
 
-      {/* Illustration */}
+      {/* Zone Image Agrandie avec Espace */}
       {slide.image && (
-        <div className="relative z-10 w-40 shrink-0 sm:w-56 lg:w-64">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={slide.image} alt="" className="w-full rounded-2xl object-cover shadow-xl" loading="lazy" />
+        <div className="relative z-10 flex w-full shrink-0 justify-center sm:w-1/2 sm:justify-end">
+          <div className="relative w-full max-w-[3  80px] sm:max-w-[560px] lg:max-w-[600px]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img  
+              src={slide.image}
+              alt=""
+              className="h-auto w-full rounded-2xl object-cover shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
+              loading="lazy"
+            />
+          </div>
         </div>
       )}
     </div>
@@ -127,7 +132,7 @@ export function PromoCarousel({ slides = DEFAULT_SLIDES, intervalMs = 4000 }: Pr
 
   return (
     <div
-      className="relative"
+      className="relative w-full"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
@@ -141,7 +146,7 @@ export function PromoCarousel({ slides = DEFAULT_SLIDES, intervalMs = 4000 }: Pr
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ duration: 0.4, ease: "easeInOut" }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
         >
           {slide.href ? (
             <Link href={slide.href} className="block">
@@ -155,31 +160,31 @@ export function PromoCarousel({ slides = DEFAULT_SLIDES, intervalMs = 4000 }: Pr
 
       {slides.length > 1 && (
         <>
-          {/* Flèches — cercles semi-transparents comme sur votre visuel */}
+          {/* Controls - Boutons Flèches */}
           <button
             onClick={() => goTo(index - 1, -1)}
             aria-label="Slide précédente"
-            className="absolute left-2 top-1/2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/60 sm:left-4"
+            className="absolute left-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-md transition-all hover:bg-black/50 hover:scale-110 sm:left-5"
           >
-            <ChevronLeft className="size-5" />
+            <ChevronLeft className="size-6" />
           </button>
           <button
             onClick={() => goTo(index + 1, 1)}
             aria-label="Slide suivante"
-            className="absolute right-2 top-1/2 z-20 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/60 sm:right-4"
+            className="absolute right-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-md transition-all hover:bg-black/50 hover:scale-110 sm:right-5"
           >
-            <ChevronRight className="size-5" />
+            <ChevronRight className="size-6" />
           </button>
 
-          {/* Pastilles */}
-          <div className="mt-4 flex items-center justify-center gap-1.5">
+          {/* Indicators / Pastilles */}
+          <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
             {slides.map((s, i) => (
               <button
                 key={s.id}
                 onClick={() => goTo(i, i > index ? 1 : -1)}
                 aria-label={`Aller à la slide ${i + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === index ? "w-6 bg-gold-400" : "w-1.5 bg-white/20 hover:bg-white/40"
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === index ? "w-8 bg-[#FFD700]" : "w-2 bg-white/40 hover:bg-white/70"
                 }`}
               />
             ))}

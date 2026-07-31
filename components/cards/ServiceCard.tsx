@@ -1,10 +1,18 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import { MapPin, MessageCircle, Star } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { cn, formatPrix } from "@/lib/utils";
+
+export function formatPrix(prix: number): string {
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "XOF",
+    maximumFractionDigits: 0,
+  })
+    .format(prix)
+    .replace("XOF", "FCFA");
+}
 
 export interface ServiceCardProps {
   titre: string;
@@ -31,21 +39,20 @@ export function ServiceCard({
 }: ServiceCardProps) {
   return (
     <motion.article
-      whileHover={{ y: -4 }}
-      transition={{ type: "spring", stiffness: 350, damping: 25 }}
-      // UI LIGHT PREMIUM: Fond Blanc cassé doux (#FAF9F6), bordures subtiles et ombre douce
-      className="group relative flex flex-col justify-between gap-3.5 rounded-2xl bg-[#FAF9F6] p-4.5 border border-slate-200/80 shadow-sm transition-all duration-300 hover:border-[#FF6600]/40 hover:bg-white hover:shadow-[0_8px_25px_rgba(255,102,0,0.12)]"
+      whileHover={{ y: -5 }}
+      transition={{ type: "spring", stiffness: 300, damping: 22 }}
+      className="group relative flex flex-col justify-between gap-3.5 rounded-2xl bg-[#FAF9F6]/90 p-5 border border-slate-200/50 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] backdrop-blur-sm transition-all duration-300 hover:border-[#FF6600]/30 hover:bg-white hover:shadow-[0_12px_32px_-6px_rgba(255,102,0,0.08)]"
     >
-      {/* En-tête : Catégorie & Badge Disponibilité */}
+      {/* En-tête : Catégorie & Badge Disponibilité Soft */}
       <div className="flex items-center justify-between gap-2">
-        <span className="inline-flex items-center rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 border border-slate-200/80 shadow-2xs">
+        <span className="inline-flex items-center rounded-full bg-slate-100/80 px-3 py-1 text-[11px] font-semibold text-slate-600 transition-colors group-hover:bg-[#FF6600]/10 group-hover:text-[#FF6600]">
           {categorie}
         </span>
 
         {disponible && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-600 border border-emerald-200/60">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700 border border-emerald-500/15">
             <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
             </span>
             Disponible
@@ -54,14 +61,13 @@ export function ServiceCard({
       </div>
 
       {/* Titre du Service */}
-      <h3 className="line-clamp-2 text-base font-bold text-slate-900 leading-snug transition-colors group-hover:text-[#FF6600]">
+      <h3 className="line-clamp-2 text-base font-bold text-slate-800 leading-snug tracking-tight transition-colors group-hover:text-[#FF6600]">
         {titre}
       </h3>
 
       {/* Prestataire & Note */}
-      <div className="flex items-center gap-3">
-        {/* Avatar avec contour jaune logo */}
-        <div className="relative size-10 shrink-0 overflow-hidden rounded-full border-2 border-[#FFC700] shadow-xs">
+      <div className="flex items-center gap-3 py-1">
+        <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-[#FFC700]/70 ring-offset-2 ring-offset-[#FAF9F6] transition-transform group-hover:scale-105">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={avatar} alt={prestataire} className="size-full object-cover" />
         </div>
@@ -70,35 +76,34 @@ export function ServiceCard({
           <p className="line-clamp-1 text-xs font-bold text-slate-800">{prestataire}</p>
           <div className="flex items-center gap-1 mt-0.5 text-xs">
             <Star className="size-3.5 fill-[#FFC700] text-[#FFC700]" />
-            <span className="font-mono font-bold text-slate-900">{note.toFixed(1)}</span>
-            <span className="text-slate-400 text-[11px]">({nombreAvis} avis)</span>
+            <span className="font-semibold text-slate-900">{note.toFixed(1)}</span>
+            <span className="text-slate-400 text-[11px]">({nombreAvis})</span>
           </div>
         </div>
       </div>
 
-      {/* Tarif & Contact (Pied de Carte) */}
-      <div className="mt-1 flex items-center justify-between pt-3 border-t border-slate-200/60">
+      {/* Tarif & Contact */}
+      <div className="flex items-center justify-between pt-3 border-t border-slate-200/40">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">À partir de</p>
-          <p className="font-mono text-base font-extrabold text-slate-900 bg-[#FFC700] px-2 py-0.5 rounded-md inline-block mt-0.5 shadow-2xs">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">À partir de</p>
+          <div className="inline-flex items-center mt-0.5 rounded-lg bg-[#FFC700]/15 px-2.5 py-1 text-xs font-bold text-slate-900 border border-[#FFC700]/30 backdrop-blur-xs">
             {formatPrix(tarifDepart)}
-          </p>
+          </div>
         </div>
 
-        {/* Bouton Message avec Orange Logo & Effet Hover Glow */}
-        <Button
-          variant="glass"
-          size="icon"
+        {/* Bouton Contact WhatsApp Soft Glow */}
+        <button
+          type="button"
           aria-label="Contacter le prestataire"
-          className="size-9 rounded-full bg-[#FF6600] text-white border-none shadow-[0_3px_10px_rgba(255,102,0,0.3)] transition-all hover:scale-110 hover:bg-[#E55C00] active:scale-95"
+          className="inline-flex size-9 items-center justify-center rounded-full bg-[#FF6600] text-white shadow-[0_4px_14px_rgba(255,102,0,0.25)] transition-all duration-200 hover:scale-105 hover:bg-[#E55C00] hover:shadow-[0_6px_20px_rgba(255,102,0,0.35)] active:scale-95 cursor-pointer"
         >
           <MessageCircle className="size-4.5" />
-        </Button>
+        </button>
       </div>
 
       {/* Localisation */}
-      <p className="flex items-center gap-1 text-xs font-medium text-slate-500">
-        <MapPin className="size-3.5 text-[#FF6600]" /> {localisation}
+      <p className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
+        <MapPin className="size-3.5 text-[#FF6600]/80" /> {localisation}
       </p>
     </motion.article>
   );

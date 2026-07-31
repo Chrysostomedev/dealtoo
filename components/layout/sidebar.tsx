@@ -43,7 +43,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 
 const NAV_ITEMS = [
   { label: "Vue d'ensemble", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "Campagnes", icon: Megaphone, href: "/publier" },
+  { label: "Annonces", icon: Megaphone, href: "/publier" },
   { label: "Rapports & Audience", icon: BarChart3, href: "/annonceur/rapports" },
   { label: "Budget & Factures", icon: Wallet, href: "#" },
 ];
