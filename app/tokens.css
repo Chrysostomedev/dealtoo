@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+/*
+  Design tokens Dealtoo — Tailwind v4.
+  Génère automatiquement les utilitaires : bg-brand-500, text-gold-500,
+  font-display, rounded-md, etc.
+  Police à charger dans app/layout.tsx via next/font ou <link> Fontshare :
+  Clash Display, General Sans, IBM Plex Mono.
+*/
+@theme {
+  /* Marque */
+  --color-brand-400: #ff7a45;
+  --color-brand-500: #ff5a1f;
+  --color-brand-600: #e8470f;
+
+  /* CTA / gamification */
+  --color-gold-500: #ffc93c;
+  --color-gold-600: #f0af12;
+
+  /* Sémantique */
+  --color-emerald-500: #00c896;
+  --color-ruby-500: #f23557;
+
+  /* Surfaces (dark par défaut) */
+  --color-canvas: #0b0e14;
+  --color-surface: #12161f;
+  --color-ink: #f5f6f8;
+  --color-ink-soft: #9aa1ae;
+  --color-ink-faint: #5d6472;
+
+  /* Typo */
+  --font-display: "Clash Display", "General Sans", sans-serif;
+  --font-body: "General Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Rayons */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  /* Dégradés (utilisables via bg-[image:var(--gradient-brand)]) */
+  --gradient-brand: linear-gradient(135deg, #ff7a45 0%, #ff5a1f 55%, #e8470f 100%);
+  --gradient-gold-glow: radial-gradient(circle at 30% 30%, #ffc93c 0%, transparent 70%);
+}
+
+/* Mode clair — réservé à l'espace admin */
+:root[data-theme="light"] {
+  --color-canvas: #fafaf9;
+  --color-surface: #ffffff;
+  --color-ink: #14151a;
+  --color-ink-soft: #5b5f6b;
+  --color-ink-faint: #9ca0aa;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+/* Zone de sécurité pour la tap bar mobile (encoches iOS) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
