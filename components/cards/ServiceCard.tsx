@@ -1,110 +1,146 @@
-"use client";
+import { 
+  Calendar, 
+  GraduationCap, 
+  MapPin, 
+  Star, 
+  Wrench, 
+  Clock, 
+  CheckCircle2,
+  ArrowUpRight
+} from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { MapPin, MessageCircle, Star } from "lucide-react";
-
-export function formatPrix(prix: number): string {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "XOF",
-    maximumFractionDigits: 0,
-  })
-    .format(prix)
-    .replace("XOF", "FCFA");
-}
+export type ServiceType = "service" | "formation" | "evenement";
 
 export interface ServiceCardProps {
+  id: string;
   titre: string;
   prestataire: string;
-  avatar: string;
-  note: number;
-  nombreAvis: number;
-  categorie: string;
-  tarifDepart: number;
+  categorie?: string;
+  type?: ServiceType;
+  prix: string;
+  note?: number;
+  avisCount?: number;
   localisation: string;
-  disponible?: boolean;
+  dateOuDuree?: string;
+  image?: string;
+  certifie?: boolean;
 }
 
+const TYPE_CONFIG = {
+  service: {
+    label: "Service",
+    icon: Wrench,
+    badgeClass: "bg-blue-50 text-blue-700 border-blue-200/80",
+  },
+  formation: {
+    label: "Formation",
+    icon: GraduationCap,
+    badgeClass: "bg-purple-50 text-purple-700 border-purple-200/80",
+  },
+  evenement: {
+    label: "Événement",
+    icon: Calendar,
+    badgeClass: "bg-amber-50 text-amber-700 border-amber-200/80",
+  },
+};
+
 export function ServiceCard({
+  id,
   titre,
   prestataire,
-  avatar,
-  note,
-  nombreAvis,
-  categorie,
-  tarifDepart,
+  type = "service",
+  prix,
+  note = 4.8,
+  avisCount = 12,
   localisation,
-  disponible,
+  dateOuDuree,
+  image,
+  certifie = false,
 }: ServiceCardProps) {
+  const config = TYPE_CONFIG[type] || TYPE_CONFIG.service;
+  const TypeIcon = config.icon;
+
   return (
-    <motion.article
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 300, damping: 22 }}
-      className="group relative flex flex-col justify-between gap-3.5 rounded-2xl bg-[#FAF9F6]/90 p-5 border border-slate-200/50 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] backdrop-blur-sm transition-all duration-300 hover:border-[#FF6600]/30 hover:bg-white hover:shadow-[0_12px_32px_-6px_rgba(255,102,0,0.08)]"
-    >
-      {/* En-tête : Catégorie & Badge Disponibilité Soft */}
-      <div className="flex items-center justify-between gap-2">
-        <span className="inline-flex items-center rounded-full bg-slate-100/80 px-3 py-1 text-[11px] font-semibold text-slate-600 transition-colors group-hover:bg-[#FF6600]/10 group-hover:text-[#FF6600]">
-          {categorie}
-        </span>
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl hover:shadow-slate-200/50">
+      {/* Lien overlay global rendant TOUTE la carte cliquable vers /services/id */}
+      <Link href={`/services/${id}`} className="absolute inset-0 z-20 focus:outline-none">
+        <span className="sr-only">Voir {titre}</span>
+      </Link>
 
-        {disponible && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700 border border-emerald-500/15">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
-            </span>
-            Disponible
-          </span>
+      <div>
+        {/* Visuel d'en-tête si présent */}
+        {image && (
+          <div className="relative mb-3.5 aspect-video w-full overflow-hidden rounded-2xl bg-slate-100">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={image}
+              alt={titre}
+              className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+          </div>
         )}
-      </div>
 
-      {/* Titre du Service */}
-      <h3 className="line-clamp-2 text-base font-bold text-slate-800 leading-snug tracking-tight transition-colors group-hover:text-[#FF6600]">
-        {titre}
-      </h3>
+        {/* En-tête : Badge Type & Note */}
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-xl border px-2.5 py-1 text-[11px] font-bold tracking-wide shadow-2xs",
+              config.badgeClass
+            )}
+          >
+            <TypeIcon className="size-3.5" />
+            {config.label}
+          </span>
 
-      {/* Prestataire & Note */}
-      <div className="flex items-center gap-3 py-1">
-        <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-[#FFC700]/70 ring-offset-2 ring-offset-[#FAF9F6] transition-transform group-hover:scale-105">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={avatar} alt={prestataire} className="size-full object-cover" />
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <p className="line-clamp-1 text-xs font-bold text-slate-800">{prestataire}</p>
-          <div className="flex items-center gap-1 mt-0.5 text-xs">
-            <Star className="size-3.5 fill-[#FFC700] text-[#FFC700]" />
-            <span className="font-semibold text-slate-900">{note.toFixed(1)}</span>
-            <span className="text-slate-400 text-[11px]">({nombreAvis})</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Tarif & Contact */}
-      <div className="flex items-center justify-between pt-3 border-t border-slate-200/40">
-        <div>
-          <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">À partir de</p>
-          <div className="inline-flex items-center mt-0.5 rounded-lg bg-[#FFC700]/15 px-2.5 py-1 text-xs font-bold text-slate-900 border border-[#FFC700]/30 backdrop-blur-xs">
-            {formatPrix(tarifDepart)}
+          <div className="flex items-center gap-1 rounded-xl bg-amber-50/80 px-2.5 py-1 border border-amber-200/60 text-xs font-semibold text-slate-800 backdrop-blur-xs">
+            <Star className="size-3.5 fill-amber-400 text-amber-400" />
+            <span>{note}</span>
+            <span className="text-[10px] text-slate-400">({avisCount})</span>
           </div>
         </div>
 
-        {/* Bouton Contact WhatsApp Soft Glow */}
-        <button
-          type="button"
-          aria-label="Contacter le prestataire"
-          className="inline-flex size-9 items-center justify-center rounded-full bg-[#FF6600] text-white shadow-[0_4px_14px_rgba(255,102,0,0.25)] transition-all duration-200 hover:scale-105 hover:bg-[#E55C00] hover:shadow-[0_6px_20px_rgba(255,102,0,0.35)] active:scale-95 cursor-pointer"
-        >
-          <MessageCircle className="size-4.5" />
-        </button>
+        {/* Titre avec bouton flèche sur survol */}
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="line-clamp-2 text-base font-bold text-slate-900 transition-colors group-hover:text-[#FF6600]">
+            {titre}
+          </h3>
+          <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all group-hover:bg-[#FF6600] group-hover:text-white">
+            <ArrowUpRight className="size-4" />
+          </div>
+        </div>
+
+        {/* Prestataire */}
+        <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-600">
+          <span>{prestataire}</span>
+          {certifie && <CheckCircle2 className="size-3.5 text-[#FF6600]" />}
+        </p>
       </div>
 
-      {/* Localisation */}
-      <p className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
-        <MapPin className="size-3.5 text-[#FF6600]/80" /> {localisation}
-      </p>
-    </motion.article>
+      {/* Pied de carte : Localisation, Durée & Tarif */}
+      <div className="mt-5 pt-3.5 border-t border-slate-100 space-y-2">
+        <div className="flex items-center justify-between text-xs text-slate-500">
+          <span className="flex items-center gap-1 truncate font-medium">
+            <MapPin className="size-3.5 shrink-0 text-slate-400" />
+            {localisation}
+          </span>
+          {dateOuDuree && (
+            <span className="flex items-center gap-1 shrink-0 text-slate-400 font-medium">
+              <Clock className="size-3.5" />
+              {dateOuDuree}
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between pt-1">
+          <span className="text-xs text-slate-400 font-medium">Tarif estimé</span>
+          <span className="text-base font-black text-slate-900 font-mono">
+            {prix}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }

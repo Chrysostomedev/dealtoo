@@ -1,19 +1,24 @@
 "use client";
 
-import { BadgeCheck, Eye, Heart, MapPin, Phone, MessageCircle, Bookmark } from "lucide-react";
+import { BadgeCheck, Eye, MapPin, Heart, Bookmark, Star } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import { cn, formatPrix, formatVues } from "@/lib/utils";
+
+export type PlanAbonnement = "business" | "starter" | "free";
 
 export interface AnnonceCardProps {
   id: string;
   titre: string;
+  description?: string;
   prix: number;
   image: string;
   localisation: string;
   vues: number;
   vendeur: string;
-  telephone?: string;
-  whatsapp?: string;
+  note?: number; // Ex: 4.8
+  nombreAvis?: number; // Ex: 24
+  planAbonnement?: PlanAbonnement; // "business", "starter" ou "free"
   negociable?: boolean;
   livraisonGratuite?: boolean;
   certifie?: boolean;
@@ -23,39 +28,77 @@ export interface AnnonceCardProps {
 export function AnnonceCard({
   id,
   titre,
+  description = "Produit en excellent état, disponible immédiatement. Contactez le vendeur pour plus de détails.",
   prix,
   image,
   localisation,
   vues,
   vendeur,
-  telephone = "+2250700000000",
-  whatsapp = "2250700000000",
+  note = 4.8,
+  nombreAvis = 12,
+  planAbonnement = "free",
   negociable,
   livraisonGratuite,
   certifie,
   estBoostee = false,
 }: AnnonceCardProps) {
-const [favori, setFavori] = useState(false);
-const [like, setLike] = useState(false);
+  const [favori, setFavori] = useState(false);
+  const [bookmark, setBookmark] = useState(false);
+
+  // Configuration visuelle du badge d'abonnement
+  const renderBadgeAbonnement = () => {
+    switch (planAbonnement) {
+      case "business":
+        return (
+          <span
+            className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 text-xs font-black text-white shadow-xs"
+            title="Abonnement Business Pro"
+          >
+            B
+          </span>
+        );
+      case "starter":
+        return (
+          <span
+            className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-tr from-[#FF6600] to-orange-400 text-xs font-black text-white shadow-xs"
+            title="Abonnement Starter"
+          >
+            S
+          </span>
+        );
+      case "free":
+      default:
+        return (
+          <span
+            className="flex size-7 items-center justify-center rounded-lg bg-slate-200 text-xs font-black text-slate-600 border border-slate-300"
+            title="Compte Gratuit"
+          >
+            F
+          </span>
+        );
+    }
+  };
 
   return (
     <article
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-xl bg-white border border-slate-200/80 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300",
+        "group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-slate-200/80 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-300",
         estBoostee && "ring-1 ring-[#FF6600]/30"
       )}
     >
       {/* Container Image */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={image}
-          alt={titre}
-          className="size-full object-cover transition-transform duration-300 group-hover:scale-102"
-        />
+        <Link href={`/annonces/${id}`} className="block size-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={image}
+            alt={titre}
+            className="size-full object-cover transition-transform duration-300 group-hover:scale-102"
+          />
+        </Link>
 
         {/* Badges d'Opportunité */}
-        <div className="absolute left-2.5 top-2.5 z-10 flex flex-wrap gap-1.5">
+        <div className="absolute left-2.5 top-2.5 z-10 flex flex-wrap gap-1.5 pointer-events-none">
           {negociable && (
             <span className="rounded-md bg-slate-900/70 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-md">
               Négociable
@@ -68,9 +111,12 @@ const [like, setLike] = useState(false);
           )}
         </div>
 
-        {/* Bouton Favori */}
+        {/* Bouton Favori (Coeur) */}
         <button
-          onClick={() => setFavori((f) => !f)}
+          onClick={(e) => {
+            e.preventDefault();
+            setFavori((f) => !f);
+          }}
           className="absolute right-2.5 top-2.5 z-10 flex size-8 items-center justify-center rounded-full bg-white/90 border border-slate-200/80 text-slate-600 shadow-2xs backdrop-blur-md transition-colors hover:bg-white hover:text-rose-500"
           aria-label="Ajouter aux favoris"
         >
@@ -80,38 +126,64 @@ const [like, setLike] = useState(false);
               favori && "fill-rose-500 text-rose-500"
             )}
           />
-        </button> 
+        </button>
 
-       <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between">
-  <div className="rounded-md bg-slate-900/85 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-md">
-    {formatPrix(prix)}
-  </div>
+        {/* Barre du bas : Prix & Bookmark */}
+        <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between">
+          <div className="rounded-md bg-slate-900/85 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-md">
+            {formatPrix(prix)}
+          </div>
 
-  <button
-    onClick={() => setFavori((f) => !f)}
-    className="flex size-8 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-600 shadow-sm backdrop-blur transition hover:bg-white hover:text-amber-500"
-    aria-label="Ajouter aux favoris"
-  >
-    <Bookmark
-      className={cn(
-        "size-4 transition-colors",
-        favori && "fill-amber-500 text-amber-500"
-      )}
-    />
-  </button>
-</div>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setBookmark((b) => !b);
+            }}
+            className="flex size-8 items-center justify-center rounded-full bg-white/90 border border-slate-200 text-slate-600 shadow-xs backdrop-blur transition hover:bg-white hover:text-amber-500"
+            aria-label="Sauvegarder"
+          >
+            <Bookmark
+              className={cn(
+                "size-4 transition-colors",
+                bookmark && "fill-amber-500 text-amber-500"
+              )}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Content */}
       <div className="flex flex-1 flex-col justify-between p-3.5 gap-3">
-        <div className="space-y-1.5">
+        <Link href={`/annonces/${id}`} className="space-y-1.5 block">
           {/* Titre */}
-          <h3 className="line-clamp-2 text-sm font-semibold text-slate-800 leading-snug transition-colors group-hover:text-[#FF6600]">
+          <h3 className="line-clamp-1 text-sm font-semibold text-slate-800 leading-snug transition-colors group-hover:text-[#FF6600]">
             {titre}
           </h3>
 
+          {/* Petite Description */}
+          <p className="line-clamp-2 text-xs text-slate-500 leading-relaxed">
+            {description}
+          </p>
+
+          {/* Étoiles & Nombre d'avis */}
+          <div className="flex items-center gap-1.5 pt-1">
+            <div className="flex items-center text-amber-400">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={cn(
+                    "size-3.5 fill-current",
+                    i < Math.floor(note) ? "text-amber-400" : "text-slate-200"
+                  )}
+                />
+              ))}
+            </div>
+            <span className="text-[11px] font-bold text-slate-700">{note}</span>
+            <span className="text-[11px] text-slate-400">({nombreAvis} avis)</span>
+          </div>
+
           {/* Infos Localisation & Vues */}
-          <div className="flex items-center justify-between text-xs text-slate-500">
+          <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
             <div className="flex items-center gap-1 min-w-0">
               <MapPin className="size-3.5 shrink-0 text-slate-400" />
               <span className="truncate">{localisation}</span>
@@ -121,40 +193,17 @@ const [like, setLike] = useState(false);
               <span>{formatVues(vues)}</span>
             </div>
           </div>
-        </div>
+        </Link>
 
-        {/* Vendeur & Boutons de contact direct */}
+        {/* Vendeur & Badge Abonnement */}
         <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1 text-xs font-medium text-slate-600 truncate">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-600 truncate">
             {certifie && <BadgeCheck className="size-4 shrink-0 text-[#FF6600]" />}
-            <span className="truncate">{vendeur}</span>
+            <span className="truncate font-semibold text-slate-800">{vendeur}</span>
           </div>
 
-          {/* Actions : Appeler & WhatsApp */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            <a
-              href={`tel:${telephone}`}
-              className="flex size-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
-              title="Appeler"
-            >
-              <Phone className="size-3.5" />
-            </a>
-            <a
-              href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex size-8 items-center justify-center rounded-lg bg-emerald-500 text-white transition-colors hover:bg-emerald-600 shadow-2xs"
-              title="Contacter sur WhatsApp"
-            >
-             <svg
-  className="size-3.5 fill-current"
-  viewBox="0 0 24 24"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.461c-1.926 0-3.715-.514-5.263-1.41l-.378-.222-3.91.871.91-3.794-.241-.397A10.742 10.742 0 0 1 2.22 12c0-5.924 4.817-10.74 10.739-10.74 5.923 0 10.74 4.816 10.74 10.74 0 5.923-4.817 10.741-10.74 10.741m0-23.2C5.97 1.357.6 6.727.6 13.357c0 2.119.555 4.188 1.61 6.01L0 25.357l6.16-1.614c1.761.96 3.754 1.464 5.799 1.464 7.373 0 13.36-5.987 13.36-13.36C25.319 6.727 19.333 1.357 11.95 1.357" />
-</svg>
-            </a>
-          </div>
+          {/* Badge Abonnement (B, S, F) */}
+          <div className="shrink-0">{renderBadgeAbonnement()}</div>
         </div>
       </div>
     </article>

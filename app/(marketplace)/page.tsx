@@ -2,7 +2,18 @@
 // app/(marketplace)/page.tsx — Accueil de la marketplace.
 // ============================================================================
 
-import { ArrowRight, Briefcase, ShoppingBag, Wrench } from "lucide-react";
+import {
+  ArrowRight,
+  Briefcase,
+  Calendar,
+  Car,
+  GraduationCap,
+  Home,
+  ShoppingBag,
+  Smartphone,
+  Wrench,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import { AnnonceCard } from "@/components/cards/AnnonceCard";
 import { BoutiqueCard } from "@/components/cards/BoutiqueCard";
@@ -13,7 +24,7 @@ import { Hero } from "@/components/sections/Hero";
 import { FiltreLocalisationCI } from "@/components/ui/FiltreLocalisationCI";
 import { StoriesSection } from "@/components/sections/StoriesSection";
 import { PubStoryCard } from "@/components/cards/PubStoryCard";
-import { ANNONCES, BOUTIQUES, CATEGORIES, EMPLOIS, SERVICES } from "@/lib/mock-data";
+import { ANNONCES, BOUTIQUES, CATEGORIES, EMPLOIS, SERVICES, SERVICES_ET_EVENTS } from "@/lib/mock-data";
 
 // En-tête de section utilitaire
 function EnteteSection({
@@ -45,7 +56,7 @@ export default function AccueilPage() {
   return (
     <>
       <Hero />
-     
+
       <CategoryGrid categories={CATEGORIES} />
 
       {/* --- Filtre par Localisation (Côte d'Ivoire) ------------------------- */}
@@ -53,44 +64,108 @@ export default function AccueilPage() {
         <div className="mx-auto max-w-7xl">
           <FiltreLocalisationCI />
         </div>
-        
       </section>
-<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-6">
-  <PubStoryCard/>
-</div>
 
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-6">
+        <PubStoryCard />
+      </div>
 
-      {/* --- Annonces tendances -------------------------------------------- */}
+      {/* --- 1. Ils se sont abonnés (Section Scrollable Horizontalement) ------ */}
       <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <EnteteSection titre="Ils se sont abonnés" icon={ShoppingBag} href="/annonces" />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          
+          <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {ANNONCES.map((annonce) => (
-              <AnnonceCard key={annonce.id} {...annonce} />
+              <div key={`abonne-${annonce.id}`} className="snap-start shrink-0 w-[280px] sm:w-[320px]">
+                <AnnonceCard {...annonce} />
+              </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* --- 2. Récemment consultés ---------------------------------------- */}
       <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <EnteteSection titre="Récemment consultés" icon={ShoppingBag} href="/annonces" />
+          <EnteteSection titre="Récemment consultés" icon={Sparkles} href="/annonces" />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {ANNONCES.map((annonce) => (
-              <AnnonceCard key={annonce.id} {...annonce} />
+            {ANNONCES.slice(0, 4).map((annonce) => (
+              <AnnonceCard key={`recent-${annonce.id}`} {...annonce} />
             ))}
           </div>
         </div>
       </section>
 
-<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-6">
-  <StoriesSection />
-</div>
-      
+      {/* --- 3. Section Auto & Moto ---------------------------------------- */}
+      <section className="px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <EnteteSection titre="Auto & Moto" icon={Car} href="/annonces?categorie=auto-moto" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {ANNONCES.slice(0, 4).map((annonce) => (
+              <AnnonceCard key={`auto-${annonce.id}`} {...annonce} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- 4. Section Téléphones & Hi-Tech -------------------------------- */}
+      <section className="px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <EnteteSection titre="Téléphones & Hi-Tech" icon={Smartphone} href="/annonces?categorie=hi-tech" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {ANNONCES.slice(0, 4).map((annonce) => (
+              <AnnonceCard key={`hitech-${annonce.id}`} {...annonce} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- 5. Section Immobilier ------------------------------------------ */}
+      <section className="px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <EnteteSection titre="Immobilier" icon={Home} href="/annonces?categorie=immobilier" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {ANNONCES.slice(0, 4).map((annonce) => (
+              <AnnonceCard key={`immo-${annonce.id}`} {...annonce} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- 6. Section Apprentissage & Formations ------------------------- */}
+      <section className="px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <EnteteSection titre="Apprentissage & Formations" icon={GraduationCap} href="/annonces?categorie=apprentissage" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {ANNONCES.slice(0, 4).map((annonce) => (
+              <AnnonceCard key={`app-${annonce.id}`} {...annonce} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- 7. Section Événements ---------------------------------------- */}
+      <section className="px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <EnteteSection titre="Événements" icon={Calendar} href="/annonces?categorie=evenements" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {ANNONCES.slice(0, 4).map((annonce) => (
+              <AnnonceCard key={`event-${annonce.id}`} {...annonce} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stories Section */}
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 space-y-6">
+        <StoriesSection />
+      </div>
+
       {/* --- Offres d'emploi récentes ---------------------------------------- */}
       <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <EnteteSection titre="Dernières annonces" icon={Briefcase} href="/emploi" />
+          <EnteteSection titre="Offres d'emplois" icon={Briefcase} href="/emploi" />
           <div className="grid gap-3 lg:grid-cols-2">
             {EMPLOIS.map((emploi) => (
               <EmploiCard key={emploi.poste} {...emploi} />
@@ -111,17 +186,21 @@ export default function AccueilPage() {
         </div>
       </section>
 
-      {/* --- Boutiques à la une ---------------------------------------------- */}
-      {/* <section className="px-4 py-8 lg:px-8">
+      {/* --- Section Services, Apprentissage & Événements ---------------- */}
+      <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <h2 className="mb-4 font-display text-xl font-semibold text-ink">Boutiques à la une</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {BOUTIQUES.map((boutique) => (
-              <BoutiqueCard key={boutique.slug} {...boutique} />
+          <EnteteSection 
+            titre="Services, Formations & Événements" 
+            icon={Wrench} 
+            href="/services" 
+          />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {SERVICES_ET_EVENTS.map((item) => (
+              <ServiceCard key={item.id} {...item} />
             ))}
           </div>
         </div>
-      </section> */}
+      </section>
     </>
   );
 }

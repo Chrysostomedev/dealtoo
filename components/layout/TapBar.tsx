@@ -10,7 +10,7 @@ const ITEMS = [
  { label: "Accueil", href: "/", icon: Home },
   { label: "Services", href: "/services", icon: Grid },
   { label: "Publier", href: "/publier", icon: PlusCircle }, // Bouton central spécial
-  { label: "Tarifs", href: "/tarifs", icon: Ticket },
+  { label: "Tarifs", href: "/offres-pro", icon: Ticket },
   { label: "Emploi", href: "/emploi", icon: Briefcase },
 ] as const;
 

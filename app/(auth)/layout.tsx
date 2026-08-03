@@ -6,8 +6,8 @@ import Sidebar, {
   SIDEBAR_WIDTH_EXPANDED,
   SIDEBAR_WIDTH_COLLAPSED,
   NAVBAR_HEIGHT,
-} from "@/components/layout/sidebar";
-import Navbar from "@/components/layout/navbar";
+} from "@/components/annonces/sidebar";
+import Navbar from "@/components/annonces/navbar";
 
 function AdvertiserLayoutContent({ children }: { children: React.ReactNode }) {
   const { collapsed } = useSidebar();

@@ -1,109 +1,183 @@
 "use client";
 
-// ============================================================================
-// app/(annonceur)/publier/page.tsx — Formulaire de publication d'annonce.
-//
-// Bonnes pratiques appliquées :
-// - "use client" nécessaire : formulaire contrôlé + navigation entre étapes.
-// - Ceci est volontairement l'ÉTAPE 1 d'un futur wizard multi-étapes (voir
-//   README § Composants clés → PublierAnnonceForm). La logique de progression
-//   (étape courante, validation Zod par étape, sauvegarde de brouillon) est
-//   à construire dans `components/form/PublierAnnonceForm.tsx` ; cette page
-//   ne fait que monter ce composant plus tard. Pour l'instant, un formulaire
-//   simple pour valider le style visuel des champs.
-// - Chaque champ est un <Input> du design system : aucune classe Tailwind
-//   redéfinie ici, la cohérence visuelle vient du composant partagé.
-// ============================================================================
+import { useState, ChangeEvent, FormEvent } from "react";
+import { Upload, X, Image as ImageIcon, Plus } from "lucide-react";
+import { FormField, Input } from "@/components/form/FormInput";
 
-import { ImagePlus, MapPin, Tag, Wallet } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+export default function PublierAnnoncePage() {
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "",
+    price: "",
+    description: "",
+  });
 
-const ETAPES = ["Catégorie & titre", "Détails & photos", "Prix & localisation"] as const;
+  const [images, setImages] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
 
-export default function PublierPage() {
-  const [etape, setEtape] = useState(0);
+  // Gestion des champs textuels
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const etapeSuivante = () => setEtape((e) => Math.min(e + 1, ETAPES.length - 1));
-  const etapePrecedente = () => setEtape((e) => Math.max(e - 1, 0));
+  // Ajout d'images multiples
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
 
-  const soumettre = () => {
-    // TODO: brancher sur core/use-cases/PublierAnnonce + services/annonces.service.ts
-    toast.success("Annonce publiée avec succès !", { description: "+15 XP gagnés" });
+    const selectedFiles = Array.from(e.target.files);
+    const updatedImages = [...images, ...selectedFiles];
+    setImages(updatedImages);
+
+    // Génération des URLs de prévisualisation
+    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
+    setPreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  // Suppression d'une image
+  const removeImage = (index: number) => {
+    URL.revokeObjectURL(previews[index]); // Libère la mémoire
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Soumission du formulaire
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("category", formData.category);
+    data.append("price", formData.price);
+    data.append("description", formData.description);
+
+    images.forEach((image) => {
+      data.append("images", image);
+    });
+
+    console.log("Données envoyées :", { ...formData, imagesCount: images.length });
+    // Effectuer ici l'appel API (ex: await fetch('/api/annonces', { method: 'POST', body: data }))
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8 lg:px-8">
-      <h1 className="font-display text-2xl font-bold text-ink">Publier une annonce</h1>
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-sm rounded-lg border border-gray-100 my-8">
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        Publier une nouvelle annonce
+      </h1>
 
-      {/* Indicateur d'étapes */}
-      <div className="mt-5 flex items-center gap-2">
-        {ETAPES.map((label, index) => (
-          <div key={label} className="flex flex-1 items-center gap-2">
-            <span
-              className={
-                "flex size-7 shrink-0 items-center justify-center rounded-full font-mono text-xs font-semibold " +
-                (index <= etape ? "bg-brand-500 text-white" : "bg-white/8 text-ink-faint")
-              }
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Titre */}
+        <FormField label="Titre de l'annonce" required>
+          <Input
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            placeholder="Ex: iPhone 15 Pro Max 256Go"
+            required
+          />
+        </FormField>
+
+        {/* Catégorie & Prix */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField label="Catégorie" required>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             >
-              {index + 1}
-            </span>
-            {index < ETAPES.length - 1 && (
-              <span className={"h-px flex-1 " + (index < etape ? "bg-brand-500" : "bg-white/8")} />
-            )}
+              <option value="">Sélectionnez une catégorie</option>
+              <option value="electronique">Électronique</option>
+              <option value="vehicules">Véhicules</option>
+              <option value="immobilier">Immobilier</option>
+              <option value="mode">Mode & Vetements</option>
+            </select>
+          </FormField>
+
+          <FormField label="Prix (FCFA)" required>
+            <Input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="Ex: 450000"
+              required
+            />
+          </FormField>
+        </div>
+
+        {/* Description */}
+        <FormField label="Description détaillée" required>
+          <textarea
+            name="description"
+            rows={4}
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Décrivez l'état de l'article, la disponibilité..."
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          />
+        </FormField>
+
+        {/* Zone Upload d'Images */}
+        <div className="space-y-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Photos de l'annonce <span className="text-red-500">*</span>
+          </label>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {/* Bouton Ajouter */}
+            <label className="flex flex-col items-center justify-center h-28 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-gray-50 transition-colors">
+              <Upload className="w-6 h-6 text-gray-400 mb-1" />
+              <span className="text-xs text-gray-500 font-medium">
+                Ajouter des photos
+              </span>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
+
+            {/* Aperçus d'images */}
+            {previews.map((src, index) => (
+              <div key={index} className="relative h-28 rounded-lg overflow-hidden border border-gray-200 group">
+                <img
+                  src={src}
+                  alt={`Aperçu ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-90 hover:opacity-100 transition-opacity"
+                  title="Supprimer la photo"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <p className="mt-2 text-sm text-ink-faint">{ETAPES[etape]}</p>
+          <p className="text-xs text-gray-500">
+            Formats acceptés : JPG, PNG. Vous pouvez sélectionner plusieurs images à la fois.
+          </p>
+        </div>
 
-      {/* Contenu de l'étape courante */}
-      <div className="mt-6 space-y-4 rounded-md border border-white/5 bg-surface p-5">
-        {etape === 0 && (
-          <>
-            <Input label="Titre de l'annonce" icon={Tag} placeholder="Ex : iPhone 14 Pro Max 256Go" />
-            <Input label="Catégorie" placeholder="Ex : Électronique" />
-          </>
-        )}
-
-        {etape === 1 && (
-          <>
-            <Input label="Description" placeholder="Décrivez l'état, les accessoires inclus..." />
-            <button
-              type="button"
-              className="flex w-full flex-col items-center gap-2 rounded-md border border-dashed border-white/15 py-8 text-ink-faint transition-colors hover:border-brand-500/40 hover:text-ink-soft"
-            >
-              <ImagePlus className="size-6" />
-              <span className="text-sm">Ajouter des photos (max 8)</span>
-            </button>
-          </>
-        )}
-
-        {etape === 2 && (
-          <>
-            <Input label="Prix (FCFA)" icon={Wallet} type="number" placeholder="Ex : 250000" />
-            <Input label="Localisation" icon={MapPin} placeholder="Ex : Cocody, Abidjan" />
-          </>
-        )}
-      </div>
-
-      {/* Navigation entre étapes */}
-      <div className="mt-6 flex justify-between">
-        <Button variant="ghost" onClick={etapePrecedente} disabled={etape === 0}>
-          Précédent
-        </Button>
-
-        {etape < ETAPES.length - 1 ? (
-          <Button variant="brand" onClick={etapeSuivante}>
-            Continuer
-          </Button>
-        ) : (
-          <Button variant="gold" onClick={soumettre}>
-            Publier l&apos;annonce
-          </Button>
-        )}
-      </div>
+        {/* Bouton de Soumission */}
+        <div className="pt-4">
+          <button
+            type="submit"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 rounded-md transition-colors shadow-sm"
+          >
+            Publier l'annonce
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

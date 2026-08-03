@@ -25,7 +25,6 @@ export function AuthCard({
 }) {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
-      {/* Halos décoratifs cohérents avec le Hero de la marketplace */}
       <div
         aria-hidden
         className="pointer-events-none absolute -top-32 right-0 h-96 w-96 rounded-full opacity-30 blur-3xl"

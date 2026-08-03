@@ -1,20 +1,14 @@
 // ============================================================================
 // mock-data.ts — jeu de données factices pour développer l'UI sans backend.
-//
-// ⚠️ À SUPPRIMER / remplacer par de vrais appels `services/*.service.ts`
-// une fois l'API branchée. Centraliser ici évite de disperser des données
-// en dur dans chaque page.
 // ============================================================================
 
 import type { AnnonceCardProps } from "@/components/cards/AnnonceCard";
 import type { EmploiCardProps } from "@/components/cards/EmploiCard";
 import type { ServiceCardProps } from "@/components/cards/ServiceCard";
 import type { BoutiqueCardProps } from "@/components/cards/BoutiqueCard";
-import { Briefcase, Home, Shirt, Smartphone, Sofa, Wrench } from "lucide-react";
-// lib/mock-data.ts
 
 export const CATEGORIES = [
-  { slug: "auto-moto",          label: "Auto & Moto",              icon: "Car" },
+  { slug: "auto-moto",          label: "Auto & Moto",               icon: "Car" },
   { slug: "telephones",         label: "Téléphones Mobiles",       icon: "Smartphone" },
   { slug: "hi-tech",            label: "Hi-Tech",                  icon: "Monitor" },
   { slug: "meubles",            label: "Meubles & Électroménagers",icon: "Sofa" },
@@ -100,7 +94,7 @@ export const ANNONCES: AnnonceCardProps[] = [
   {
     id: "a7",
     titre: "Appartement 3 pièces meublé — Vue Lagune",
-    prix: 85_000, // prix par nuit / jour
+    prix: 85_000,
     image: "https://dealtoo.s3.eu-west-3.amazonaws.com/files/production/CI/23742/posts/1785410547696.jpg",
     localisation: "Biétry, Marcory",
     vues: 1890,
@@ -128,7 +122,7 @@ export const ANNONCES: AnnonceCardProps[] = [
     livraisonGratuite: true,
   },
   {
-    id: "10",
+    id: "a10",
     titre: "Smart TV Samsung 55\" 4K UHD Smart ThinQ",
     prix: 280_000,
     image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600",
@@ -223,7 +217,7 @@ export const EMPLOIS: EmploiCardProps[] = [
     id: "e7",
     poste: "Développeur Mobile React Native / Expo",
     entreprise: "Tchôlô Apps",
-    logo: "https://www.pexels.com/fr-fr/photo/businessman-homme-d-affaires-bureau-travailler-12902862/",
+    logo: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600",
     localisation: "Télétravail (Abidjan)",
     typeContrat: "Freelance",
     salaireMin: 350_000,
@@ -246,29 +240,90 @@ export const EMPLOIS: EmploiCardProps[] = [
     urgent: false,
   },
 ];
-export const SERVICES: ServiceCardProps[] = [
+
+// Données combinées Services, Formations et Événements alignées avec ServiceCardProps
+export const SERVICES_ET_EVENTS: ServiceCardProps[] = [
   {
-    titre: "Création de logo & identité visuelle",
-    prestataire: "Aïcha Koné",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aicha",
-    note: 4.9,
-    nombreAvis: 87,
-    categorie: "Design",
-    tarifDepart: 25_000,
-    localisation: "Abidjan · à distance",
-    disponible: true,
+    id: "1",
+    titre: "Dépannage & Installation Climatisation Pro",
+    prestataire: "ClimIvoire Express",
+    categorie: "Maison",
+    type: "service",
+    prix: "15 000 FCFA",
+    note: 4.8,
+    avisCount: 24,
+    localisation: "Cocody, Abidjan",
+    dateOuDuree: "Intervention 24h",
+    certifie: true,
   },
   {
-    titre: "Réparation plomberie à domicile",
-    prestataire: "Yao Plomberie",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Yao",
-    note: 4.6,
-    nombreAvis: 132,
+    id: "2",
+    titre: "Formation Accélérée Développement Web & Next.js",
+    prestataire: "TechAcadémie CI",
+    categorie: "Informatique",
+    type: "formation",
+    prix: "50 000 FCFA",
+    note: 4.9,
+    avisCount: 42,
+    localisation: "En ligne / Marcory",
+    dateOuDuree: "4 Semaines",
+    certifie: true,
+  },
+  {
+    id: "3",
+    titre: "Salon du Digital & de l'Innovation Abidjan 2026",
+    prestataire: "Ivoire Event Org",
+    categorie: "Conférence",
+    type: "evenement",
+    prix: "Pass Gratuit",
+    note: 5.0,
+    avisCount: 18,
+    localisation: "Palais de la Culture",
+    dateOuDuree: "12 Octobre",
+    certifie: true,
+  },
+  {
+    id: "4",
+    titre: "Plomberie Générale & Recherche de Fuites",
+    prestataire: "Kouassi Services",
     categorie: "Maison",
-    tarifDepart: 10_000,
-    localisation: "Yopougon",
+    type: "service",
+    prix: "Sur Devis",
+    note: 4.5,
+    avisCount: 11,
+    localisation: "Yopougon, Abidjan",
+    dateOuDuree: "7j/7",
+    certifie: false,
+  },
+  {
+    id: "5",
+    titre: "Atelier Pratique : Électricité Bâtiment & Domotique",
+    prestataire: "ProFormation CI",
+    categorie: "Technique",
+    type: "formation",
+    prix: "35 000 FCFA",
+    note: 4.7,
+    avisCount: 30,
+    localisation: "Treichville",
+    dateOuDuree: "3 Jours",
+    certifie: true,
+  },
+  {
+    id: "6",
+    titre: "Concert Live & Networking Tech Entrepreneurs",
+    prestataire: "Abidjan Connect",
+    categorie: "Networking",
+    type: "evenement",
+    prix: "5 000 FCFA",
+    note: 4.6,
+    avisCount: 15,
+    localisation: "Zone 4, Marcory",
+    dateOuDuree: "20 Novembre",
+    certifie: false,
   },
 ];
+
+export const SERVICES = SERVICES_ET_EVENTS;
 
 export const BOUTIQUES: BoutiqueCardProps[] = [
   {
@@ -284,7 +339,7 @@ export const BOUTIQUES: BoutiqueCardProps[] = [
     slug: "deco-ivoire",
     nom: "Déco Ivoire",
     logo: "https://api.dicebear.com/7.x/initials/svg?seed=DI",
-    couverture: "https://www.pexels.com/fr-fr/photo/villa-de-luxe-avec-piscine-a-debordement-dans-un-cadre-pittoresque-35069535/",
+    couverture: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800",
     niveau: 12,
     note: 4.5,
     nombreProduits: 43,

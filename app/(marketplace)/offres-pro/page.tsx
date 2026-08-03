@@ -3,27 +3,33 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Crown,
   Check,
   ArrowRight,
   ShieldCheck,
   Zap,
   Award,
 } from "lucide-react";
-import { formatPrix } from "@/components/cards/ServiceCard";
+import { ForfaitModal, PlanData } from "@/components/modals/ForfaitModal";
+import { formatPrix } from "@/lib/utils";
 
 export default function OffresProfessionnellesPage() {
-  const [periode, setPeriode] = useState<"mensuel">("mensuel");
+  // Correction 1: Stocker le plan sélectionné plutôt qu'un boolean global
+  const [selectedPlan, setSelectedPlan] = useState<PlanData | null>(null);
 
-  const plansPro = [
+  const plansPro: (PlanData & {
+    id: string;
+    tagline: string;
+    badge: string;
+    caracteristiques: string[];
+  })[] = [
     {
       id: "free",
       nom: "Gratuit",
       tagline: "Idéal pour débuter et booster vos premières ventes",
       prixMensuel: 0,
-      // prixAnnuel: 0,
       badge: "Indépendant",
       populaire: false,
+      couleurHex: "#64748B", // Slate
       caracteristiques: [
         "Jusqu'à 5 annonces actives",
         "Badge Vendeur Vérifié",
@@ -37,9 +43,9 @@ export default function OffresProfessionnellesPage() {
       nom: "Pro Starter",
       tagline: "Idéal pour débuter et booster vos premières ventes",
       prixMensuel: 1000,
-      // prixAnnuel: 12000,
       badge: "Indépendant",
       populaire: false,
+      couleurHex: "#0EA5E9", // Sky
       caracteristiques: [
         "Jusqu'à 15 annonces actives",
         "Badge Vendeur Vérifié",
@@ -53,9 +59,9 @@ export default function OffresProfessionnellesPage() {
       nom: "Pro Business",
       tagline: "Le choix N°1 pour les boutiques et petites entreprises",
       prixMensuel: 2000,
-      // prixAnnuel: 28000,
       badge: "Recommandé",
       populaire: true,
+      couleurHex: "#FF6600", // Brand Orange
       caracteristiques: [
         "Annonces illimitées",
         "Badge Boutique Officielle Certifiée",
@@ -71,66 +77,36 @@ export default function OffresProfessionnellesPage() {
       nom: "Business Pro",
       tagline: "Pour les grandes marques et réseaux de distribution",
       prixMensuel: 5000,
-      // prixAnnuel: 60000,
       badge: "Premium",
       populaire: false,
+      couleurHex: "#8B5CF6", // Purple
       caracteristiques: [
-
-  
-        "1 annonce(s) et badges",
-        "Téléphone ",
-        " SMS ",
-        " WhatsApp ",
-        "Accès aux messages ",
-        "Capsule(s) vidéo(s) & 0 Flash(s) (6 images)",
+        "Annonces illimitées et tous badges",
+        "Affichage Téléphone & WhatsApp",
+        "Accès complet aux messages",
+        "Capsules vidéos & annonces Flash (6 images)",
       ],
     },
   ];
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-slate-800 pb-24">
+      {/* Header */}
       <section className="relative pt-20 pb-16 bg-white border-b border-slate-200/50 overflow-hidden">
         <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-amber-400 text-xs font-bold tracking-wide shadow-md mb-6">
-            <Crown className="size-4 fill-amber-400" />
-            ESPACE ABONNEMENTS PROFESSIONNELS
-          </span>
-
           <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight">
             Passez au niveau supérieur avec nos <span className="text-[#FF6600]">Offres Pro</span>
           </h1>
-
           <p className="mt-4 text-base sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Profitez d'une visibilité maximale, gagnez la confiance de vos clients avec nos badges certifiés.
+            Profitez d&apos;une visibilité maximale et gagnez la confiance de vos clients avec nos badges certifiés.
           </p>
-
-          {/* <div className="mt-10 inline-flex items-center gap-3 p-1.5 bg-slate-100 rounded-2xl border border-slate-200/80">
-            <button
-              onClick={() => setPeriode("mensuel")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                periode === "mensuel" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500 hover:text-slate-800"
-              }`}
-            >
-              Facturation Mensuelle
-            </button>
-            <button
-              onClick={() => setPeriode("mensuel")}
-              className={`flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                periode === "mensuel" ? "bg-slate-900 text-white shadow-md" : "text-slate-500 hover:text-slate-800"
-              }`}
-            >
-              Facturation Annuelle
-              <span className="px-2 py-0.5 rounded-full bg-[#FF6600] text-white text-[10px]">-20%</span>
-            </button>
-          </div> */}
         </div>
       </section>
 
+      {/* Grid de tarifs */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
           {plansPro.map((plan) => {
-       const prix = plan.prixMensuel;
-
             return (
               <motion.div
                 key={plan.id}
@@ -167,7 +143,7 @@ export default function OffresProfessionnellesPage() {
                   <div className="my-6 pt-6 border-t border-slate-200/20">
                     <div className="flex items-baseline gap-1">
                       <span className="text-4xl font-extrabold tracking-tight">
-                        {formatPrix(prix)}
+                        {formatPrix(plan.prixMensuel)}
                       </span>
                       <span className={`text-xs ${plan.populaire ? "text-slate-400" : "text-slate-500"}`}>
                         / mois
@@ -193,8 +169,10 @@ export default function OffresProfessionnellesPage() {
                   </ul>
                 </div>
 
+                {/* Bouton déclencheur corrigé */}
                 <button
                   type="button"
+                  onClick={() => setSelectedPlan(plan)}
                   className={`w-full py-3.5 px-4 rounded-2xl font-bold text-xs transition-all duration-200 shadow-md cursor-pointer flex items-center justify-center gap-2 ${
                     plan.populaire
                       ? "bg-[#FF6600] text-white hover:bg-[#E55C00] hover:shadow-[0_8px_25px_rgba(255,102,0,0.4)]"
@@ -210,7 +188,14 @@ export default function OffresProfessionnellesPage() {
         </div>
       </section>
 
-      {/* Garanties */}
+      {/* Modale unique placée hors de la boucle */}
+      <ForfaitModal
+        isOpen={!!selectedPlan}
+        onClose={() => setSelectedPlan(null)}
+        plan={selectedPlan}
+      />
+
+      {/* Section Garanties */}
       <section className="max-w-5xl mx-auto px-4 mt-20">
         <div className="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-xs grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
           <div>
@@ -225,7 +210,7 @@ export default function OffresProfessionnellesPage() {
               <Zap className="size-6" />
             </div>
             <h4 className="font-bold text-sm text-slate-900">Activation Immédiate</h4>
-            <p className="text-xs text-slate-500 mt-1">Avantages débloqués à l'instant</p>
+            <p className="text-xs text-slate-500 mt-1">Avantages débloqués à l&apos;instant</p>
           </div>
           <div>
             <div className="size-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
