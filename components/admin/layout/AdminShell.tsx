@@ -1,14 +1,16 @@
 "use client";
 
 import React from "react";
+import { 
+  NAVBAR_HEIGHT, 
+  SIDEBAR_WIDTH_EXPANDED, 
+  SIDEBAR_WIDTH_COLLAPSED   
+} from "@/components/admin/layout/constants";
 import Sidebar, { 
   SidebarProvider, 
-  useSidebar, 
-  SIDEBAR_WIDTH_EXPANDED, 
-  SIDEBAR_WIDTH_COLLAPSED, 
-  NAVBAR_HEIGHT 
-} from "@/components/layout/sidebar";
-import Navbar from "@/components/layout/navbar";
+  useSidebar 
+} from "@/components/admin/layout/AdminSidebar";
+import Navbar from "@/components/admin/layout/AdminNavbar";
 
 function ShellMainContent({ children }: { children: React.ReactNode }) {
   const { collapsed } = useSidebar();

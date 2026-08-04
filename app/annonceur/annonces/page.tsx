@@ -111,7 +111,7 @@ export default function AnnoncesGestionPage() {
         </div>
 
         <Link
-          href="/annonceur/annonces/nouvelle"
+          href="/annonceur/publier"
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF6600] px-5 py-3 text-xs font-bold text-white shadow-md transition-all hover:bg-orange-600 active:scale-95"
         >
           <Plus size={18} />

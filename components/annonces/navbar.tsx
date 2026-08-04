@@ -53,7 +53,7 @@ export default function Navbar() {
 
         {/* Bouton d'action Publier en Orange Dealtoo */}
         <Link 
-          href="/publier" 
+          href="/annonceur/publier" 
           className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-[#FF6B00] hover:bg-[#E05E00] text-white font-black text-xs transition shadow-md shadow-[#FF6B00]/20 cursor-pointer"
         >
           <Plus size={16} />

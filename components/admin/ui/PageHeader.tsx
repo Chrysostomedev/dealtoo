@@ -1,0 +1,32 @@
+"use client";
+
+import { useState } from "react";
+import { ChevronUp, ChevronDown } from "lucide-react";
+
+interface PageHeaderProps {
+  title: string;
+  subtitle: string;
+}
+
+export default function PageHeader({ title, subtitle }: PageHeaderProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  return (
+    <div className="relative bg-white border border-slate-100 rounded-2xl shadow-sm mb-6 px-6 flex flex-col justify-center transition-all duration-300">
+      <div className={`flex flex-col gap-0.5 pr-10 transition-all duration-300 ${isCollapsed ? "py-3" : "py-6"}`}>
+        <h1 className={`font-black text-slate-900 tracking-tight transition-all duration-300 ${isCollapsed ? "text-lg" : "text-xl md:text-2xl lg:text-3xl"}`}>
+          {title}
+        </h1>
+        <p className={`text-slate-500 text-[11px] md:text-xs lg:text-sm transition-all duration-300 overflow-hidden ${isCollapsed ? "h-0 opacity-0" : "h-auto opacity-100"}`}>
+          {subtitle}
+        </p>
+      </div>
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="absolute right-6 top-1/2 -translate-y-1/2 p-1.5 hover:bg-slate-50 rounded-full border border-slate-100 text-slate-400 hover:text-slate-600 transition"
+      >
+        {isCollapsed ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
+      </button>
+    </div>
+  );
+}

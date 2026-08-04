@@ -116,20 +116,25 @@ export default function Sidebar() {
       <div className="flex items-center justify-between h-[76px] px-5 border-b border-slate-100 shrink-0">
         {!collapsed ? (
           <div className="flex items-center gap-3 min-w-0">
-            <Link href="/" className="relative size-10 rounded-2xl bg-white border border-brand-500/10 flex items-center justify-center shrink-0 shadow-xs p-1 hover:border-brand-500/30 transition-all">
-              <Image src="/img/logo-dealtoo.png" alt="Dealtoo" width={32} height={32} className="object-contain" />
-            </Link>
-            <div className="flex flex-col min-w-0">
-              <span className="text-xs font-black text-slate-900 tracking-tight">DEALTOO</span>
-              <span className="text-[9px] font-black text-brand-500 uppercase tracking-wider">
-                Espace POS
-              </span>
-            </div>
+            <Link href="/" className="relative w-50 h-9  flex items-center justify-center shrink-0 p-1 hover:border-brand-500/30 transition-all">
+ <Image
+                              src="https://dealtoo.co/img/Dealtoo.gif?v=1751539804"
+                              alt="Dealtoo"
+                              width={135}
+                              height={40}
+                              unoptimized
+                            />            </Link>
+          
           </div>
         ) : (
-          <Link href="/" className="mx-auto size-10 rounded-2xl bg-white border border-brand-500/10 flex items-center justify-center shadow-xs p-1 hover:border-brand-500/30 transition-all">
-            <Image src="/img/logo-dealtoo.png" alt="Dealtoo" width={26} height={26} className="object-contain" />
-          </Link>
+          <Link href="/" className="mx-auto w-50 h-9 flex items-center justify-center shadow-xs p-1 hover:border-brand-500/30 transition-all">
+ <Image
+                              src="https://dealtoo.co/img/Dealtoo.gif?v=1751539804"
+                              alt="Dealtoo"
+                              width={135}
+                              height={40}
+                              unoptimized
+                            />          </Link>
         )}
         <div className="flex items-center shrink-0">
           <button
