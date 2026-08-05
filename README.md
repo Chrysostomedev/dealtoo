@@ -368,4 +368,5 @@ Variables d'environnement attendues (`.env.local`) : URL API, clés du gateway d
 - [ ] Dashboard annonceur
 - [ ] Back-office admin
 - [ ] Leaderboard public#   d e a l t o o  
+ #   D e a l t o o W e b - 2 . 0  
  
